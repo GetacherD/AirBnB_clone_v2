@@ -126,23 +126,28 @@ class HBNBCommand(cmd.Cmd):
         new_instance = HBNBCommand.classes[cls_name]()
         if (len(args.split(" ")) >= 2):
             for attr in clean(args.split(" ", maxsplit=1)[1]):
+                if "=" not in attr:
+                    continue
                 k = attr.split("=")[0]
                 v = attr.split("=")[1]
                 if (v[0] in ["'", '"']):
                     v = v[1:]
+                    for i in v:
+                        if i == "_":
+                            v = v.replace("_", " ")
                 if v[-1] in ["'", '"']:
                     v = v[:-1]
                 if "." in v:
                     try:
                         v = float(v)
                     except ValueError:
-                        print(v)
+                        pass
                 else:
                     try:
                         v = int(v)
                     except ValueError:
-                        print(v)
-        setattr(new_instance, k, v)
+                        pass
+                setattr(new_instance, k, v)
         storage.save()
         print(new_instance.id)
         storage.save()
