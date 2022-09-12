@@ -10,6 +10,7 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
+from utils import clean
 
 
 class HBNBCommand(cmd.Cmd):
@@ -52,7 +53,6 @@ class HBNBCommand(cmd.Cmd):
 
             # isolate <class name>
             _cls = pline[:pline.find('.')]
-
             # isolate and validate <command>
             _cmd = pline[pline.find('.') + 1:pline.find('(')]
             if _cmd not in HBNBCommand.dot_cmds:
@@ -73,7 +73,7 @@ class HBNBCommand(cmd.Cmd):
                 pline = pline[2].strip()  # pline is now str
                 if pline:
                     # check for *args or **kwargs
-                    if pline[0] is '{' and pline[-1] is'}'\
+                    if pline[0] == '{' and pline[-1] == '}'\
                             and type(eval(pline)) is dict:
                         _args = pline
                     else:
@@ -115,13 +115,34 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """ Create an object of any class"""
+        print(args)
         if not args:
             print("** class name missing **")
             return
-        elif args not in HBNBCommand.classes:
+        cls_name = args.split(" ")[0]
+        if cls_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[args]()
+        new_instance = HBNBCommand.classes[cls_name]()
+        if (len(args.split(" ")) >= 2):
+            for attr in clean(args.split(" ", maxsplit=1)[1]):
+                k = attr.split("=")[0]
+                v = attr.split("=")[1]
+                if (v[0] in ["'", '"']):
+                    v = v[1:]
+                if v[-1] in ["'", '"']:
+                    v = v[:-1]
+                if "." in v:
+                    try:
+                        v = float(v)
+                    except ValueError:
+                        print(v)
+                else:
+                    try:
+                        v = int(v)
+                    except ValueError:
+                        print(v)
+        setattr(new_instance, k, v)
         storage.save()
         print(new_instance.id)
         storage.save()
@@ -319,6 +340,7 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the update class """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
