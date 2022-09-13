@@ -2,8 +2,9 @@
 """ Console Module """
 import cmd
 import sys
+from os import getenv
 from models.base_model import BaseModel
-from models.__init__ import storage
+from models import storage
 from models.user import User
 from models.place import Place
 from models.state import State
@@ -11,6 +12,7 @@ from models.city import City
 from models.amenity import Amenity
 from models.review import Review
 from utils import clean
+print(getenv("HBNB_TYPE_STORAGE"))
 
 
 class HBNBCommand(cmd.Cmd):
@@ -115,7 +117,6 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """ Create an object of any class"""
-        print(args)
         if not args:
             print("** class name missing **")
             return
@@ -123,7 +124,7 @@ class HBNBCommand(cmd.Cmd):
         if cls_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[cls_name]()
+        kwargs = {}
         if (len(args.split(" ")) >= 2):
             for attr in clean(args.split(" ", maxsplit=1)[1]):
                 if "=" not in attr:
@@ -139,18 +140,23 @@ class HBNBCommand(cmd.Cmd):
                     v = v[:-1]
                 if "." in v:
                     try:
-                        v = float(v)
+                        float(v)
                     except ValueError:
                         pass
+                    else:
+                        v = float(v)
                 else:
                     try:
-                        v = int(v)
+                        int(v)
                     except ValueError:
                         pass
-                setattr(new_instance, k, v)
+                    else:
+                        v = int(v)
+                kwargs[k] = v
+        new_instance = HBNBCommand.classes[cls_name](**kwargs)
+        storage.new(new_instance)
         storage.save()
         print(new_instance.id)
-        storage.save()
 
     def help_create(self):
         """ Help information for the create method """
@@ -181,7 +187,7 @@ class HBNBCommand(cmd.Cmd):
 
         key = c_name + "." + c_id
         try:
-            print(storage._FileStorage__objects[key])
+            print(storage.all(cls=c_name))
         except KeyError:
             print("** no instance found **")
 
@@ -225,21 +231,15 @@ class HBNBCommand(cmd.Cmd):
 
     def do_all(self, args):
         """ Shows all objects, or all objects of a class"""
-        print_list = []
 
         if args:
             args = args.split(' ')[0]  # remove possible trailing args
             if args not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
-            for k, v in storage._FileStorage__objects.items():
-                if k.split('.')[0] == args:
-                    print_list.append(str(v))
+            print(storage.all(cls=args))
         else:
-            for k, v in storage._FileStorage__objects.items():
-                print_list.append(str(v))
-
-        print(print_list)
+            print(storage.all(cls=None))
 
     def help_all(self):
         """ Help information for the all command """
