@@ -30,6 +30,7 @@ class DBStorage:
         if not cls:
             result = self.__session.query(State).all()
             result.extend(self.__session.query(City).all())
+            result.extend(self.__session.query(User).all())
         else:
             if type(cls) == str:
                 cls = eval(cls)
