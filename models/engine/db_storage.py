@@ -43,7 +43,7 @@ class DBStorage:
                 cls = eval(cls)
             result = self.__session.query(cls).all()
         result = {
-                f"{obj.__class__.__name__}.{obj.id}":
+                f"{type(obj).__name__}.{obj.id}":
                 obj.to_dict() for obj in result}
         return result
 
