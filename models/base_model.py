@@ -23,7 +23,6 @@ class BaseModel:
         self.created_at = datetime.utcnow()
         self.updated_at = datetime.utcnow()
         if kwargs:
-            print("kwargs = ", kwargs)
             for key, value in kwargs.items():
                 if key in ["created_at", "updated_at"]:
                     value = datetime.strptime(value, '%Y-%m-%dT%H:%M:%S.%f')
@@ -47,7 +46,6 @@ class BaseModel:
     def to_dict(self):
         """Convert instance into dict format"""
         my_dict = self.__dict__.copy()
-        print("my_dict = ", my_dict)
         my_dict["__class__"] = type(self).__name__
         if my_dict.get("_sa_instance_state", None):
             del my_dict["_sa_instance_state"]

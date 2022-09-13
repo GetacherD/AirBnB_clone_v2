@@ -16,10 +16,6 @@ class DBStorage:
 
     def __init__(self):
         """ initialize storage """
-        print(getenv("HBNB_MYSQL_USER"),
-              getenv("HBNB_MYSQL_PWD"),
-              getenv("HBNB_MYSQL_HOST"),
-              getenv("HBNB_MYSQL_DB"))
         self.__engine = create_engine(
             "mysql+mysqldb://{}:{}@{}:3306/{}".format(
                 getenv("HBNB_MYSQL_USER"),
@@ -28,23 +24,16 @@ class DBStorage:
                 getenv("HBNB_MYSQL_DB")), pool_pre_ping=True)
         if getenv("HBNB_ENV") == "test":
             Base.metadata.drop_all(self.__engine)
-        print("After Delete")
-        '''
-        self.__session__ = sessionmaker(bind=self.__engine)
-        self.__session = scoped_session(self.__session__)
-        '''
 
     def all(self, cls=None):
         """ print all data """
         if not cls:
             result = self.__session.query(State).all()
-            print(result[0].__dict__)
             result.extend(self.__session.query(City).all())
         else:
             if type(cls) == str:
                 cls = eval(cls)
             result = self.__session.query(cls).all()
-            print("result = ", result)
         result = {
                 f"{obj.__class__.__name__}.{obj.id}":
                 obj.to_dict() for obj in result}
@@ -53,7 +42,6 @@ class DBStorage:
     def new(self, obj):
         """ add new object to session"""
         self.__session.add(obj)
-        print("saved data", obj.__dict__)
 
     def save(self):
         """ save session to database """
