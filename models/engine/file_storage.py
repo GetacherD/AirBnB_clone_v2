@@ -22,7 +22,8 @@ class FileStorage:
 
     def new(self, obj):
         """Adds new object to storage dictionary"""
-        FileStorage.__objects[obj.to_dict()['__class__'] + '.' + obj.id] = obj
+        FileStorage.__objects["{}.{}".format(
+            type(obj).__name__, obj.id)] = obj
 
     def save(self):
         """Saves storage dictionary to file"""
@@ -41,7 +42,7 @@ class FileStorage:
     def delete(self, obj):
         """ Delete object """
         if obj:
-            cls_name = obj.to_dict().get("__class__", None)
+            cls_name = type(obj).__name__
             if cls_name:
                 _id = obj.to_dict().get("id")
                 key = f"{cls_name}.{_id}"
@@ -68,8 +69,7 @@ class FileStorage:
             temp = {}
             with open(FileStorage.__file_path, 'r') as f:
                 temp = f.read()
-                print("data = ", temp)
-                temp = {}
+                temp = json.loads(temp)
                 for key, val in temp.items():
                     FileStorage.__objects[key] = classes[
                         val['__class__']](**val)
