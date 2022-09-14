@@ -30,17 +30,17 @@ class FileStorage:
 
     def new(self, obj):
         """Adds new object to storage dictionary"""
-        self.close()
-        FileStorage.__objects["{}.{}".format(
-            type(obj).__name__, obj.id)] = obj
+        key = "{}.{}".format(type(obj).__name__, obj.id)
+        value = obj
+        FileStorage.__objects[key] = value
 
     def save(self):
         """Saves storage dictionary to file"""
         with open(FileStorage.__file_path, 'w', encoding="utf-8") as f:
             temp = {}
             if FileStorage.__objects:
-                temp = FileStorage.__objects
-                for key, val in temp.items():
+                my_dict = FileStorage.__objects
+                for key, val in my_dict.items():
                     val = val.to_dict()
                     for k, v in val.items():
                         if isinstance(v, datetime):
