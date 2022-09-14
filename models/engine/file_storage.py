@@ -19,7 +19,8 @@ class FileStorage:
             return res
         res = {}
         for key, value in FileStorage.__objects.items():
-            if str(key).split(".")[0] == cls.__name__:
+            if str(key).split(".")[0] == cls.__name__ or str(
+                    key).split(".")[0] == str(cls):
                 res[key] = str(value)
         return res
 
