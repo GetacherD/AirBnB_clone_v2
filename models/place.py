@@ -2,18 +2,19 @@
 """ Place Module for HBNB project """
 from os import getenv
 from sqlalchemy import (
-    Column, String, Integer, ForeignKey, Float, Table)
+    Column, String, Integer, ForeignKey, Float)
 from sqlalchemy.orm import relationship
 from models.base_model import BaseModel, Base
 from models.amenity import Amenity
 
 
-place_amenity = Table(
-    "place_amenity", Base.metadata,
-    Column("place_id", String(60),
-           ForeignKey("places.id"), primary_key=True, nullable=False),
-    Column("amenity_id", String(60),
-           ForeignKey("amenities.id"), primary_key=True, nullable=False))
+class Association(Base):
+    """ Association table """
+    __tablename__ = "place_amenity"
+    place_id = Column(ForeignKey("places.id"),
+                      primary_key=True, nullable=False)
+    amenity_id = Column(ForeignKey("amenities.id"),
+                        primary_key=True, nullable=False)
 
 
 class Place(BaseModel, Base):

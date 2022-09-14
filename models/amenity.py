@@ -5,5 +5,7 @@ from models.base_model import BaseModel, Base
 
 
 class Amenity(BaseModel, Base):
+    """ Model of amenity"""
+
     __tablename__ = "amenities"
     name = Column(String(128), nullable=False)
