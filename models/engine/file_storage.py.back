@@ -30,7 +30,6 @@ class FileStorage:
 
     def new(self, obj):
         """Adds new object to storage dictionary"""
-        self.close()
         FileStorage.__objects["{}.{}".format(
             type(obj).__name__, obj.id)] = obj
 
@@ -39,13 +38,13 @@ class FileStorage:
         with open(FileStorage.__file_path, 'w', encoding="utf-8") as f:
             temp = {}
             if FileStorage.__objects:
-                temp = FileStorage.__objects
-                for key, val in temp.items():
-                    val = val.to_dict()
-                    for k, v in val.items():
-                        if isinstance(v, datetime):
-                            val[k] = datetime.isoformat(v)
-                    temp[key] = val
+                temp = FileStorage.__objects.copy()
+            for key, val in temp.items():
+                val = val.to_dict()
+                for k, v in val.items():
+                    if isinstance(v, datetime):
+                        val[k] = datetime.isoformat(v)
+                temp[key] = val
             json.dump(temp, f)
 
     def delete(self, obj):
@@ -70,11 +69,10 @@ class FileStorage:
             temp = {}
             with open(FileStorage.__file_path, 'r') as f:
                 temp = f.read()
-                if temp:
-                    temp = json.loads(temp)
-                    for key, val in temp.items():
-                        FileStorage.__objects[key] = classes[
-                            val['__class__']](**val)
+                temp = json.loads(temp)
+                for key, val in temp.items():
+                    FileStorage.__objects[key] = classes[
+                        val['__class__']](**val)
         except FileNotFoundError:
             pass
 
