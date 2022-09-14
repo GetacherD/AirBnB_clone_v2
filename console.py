@@ -235,9 +235,11 @@ class HBNBCommand(cmd.Cmd):
             if args not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
-            print(storage.all(cls=args))
+            print([f"{str(key)}:{str(val)}" for key, val in storage.all(
+                cls=args).items()])
         else:
-            print(storage.all(cls=None))
+            print([f"{str(key)}:{str(val)}"
+                   for key, val in storage.all().items()])
 
     def help_all(self):
         """ Help information for the all command """
