@@ -12,16 +12,12 @@ class FileStorage:
     def all(self, cls=None):
         """Returns a dictionary of models currently in storage"""
         if not cls:
-            res = {}
-            for key, val in FileStorage.__objects.items():
-                print("prinitg key value", key, val)
-                res[key] = str(val)
-            return res
+            return FileStorage.__objects
         res = {}
         for key, value in FileStorage.__objects.items():
             if str(key).split(".")[0] == cls.__name__ or str(
                     key).split(".")[0] == str(cls):
-                res[key] = str(value)
+                res[key] = value
         return res
 
     def new(self, obj):
