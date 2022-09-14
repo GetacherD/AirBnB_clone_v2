@@ -29,6 +29,7 @@ class BaseModel:
                         value = datetime.fromisoformat(value)
                 if key != "__class__":
                     setattr(self, key, value)
+        models.storage.new(self)
 
     def __str__(self):
         """Returns a string representation of the instance"""

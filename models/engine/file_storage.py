@@ -14,12 +14,13 @@ class FileStorage:
         if not cls:
             res = {}
             for key, val in FileStorage.__objects.items():
+                print("prinitg key value", key, val)
                 res[key] = str(val)
             return res
         res = {}
-        for key, val in FileStorage.__objects.items():
-            if str(key).split(".")[0] == str(cls):
-                res[key] = str(val)
+        for key, value in FileStorage.__objects.items():
+            if str(key).split(".")[0] == cls.__name__:
+                res[key] = str(value)
         return res
 
     def new(self, obj):
@@ -30,7 +31,8 @@ class FileStorage:
         """Saves storage dictionary to file"""
         with open(FileStorage.__file_path, 'w', encoding="utf-8") as f:
             temp = {}
-            temp.update(FileStorage.__objects)
+            if FileStorage.__objects:
+                temp = FileStorage.__objects.copy()
             for key, val in temp.items():
                 val = val.to_dict()
                 for k, v in val.items():
@@ -41,6 +43,14 @@ class FileStorage:
 
     def delete(self, obj):
         """ Delete object """
+        if obj:
+            cls_name = obj.to_dict().get("__class__", None)
+            if cls_name:
+                _id = obj.to_dict().get("id")
+                key = f"{cls_name}.{_id}"
+                if key in FileStorage.__objects:
+                    del FileStorage.__objects[key]
+                    self.save()
 
     def reload(self):
         """Loads storage dictionary from file"""
