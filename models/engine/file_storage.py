@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """This module defines a class to manage file storage for hbnb clone"""
 import json
+from datetime import datetime
 
 
 class FileStorage:
@@ -10,20 +11,36 @@ class FileStorage:
 
     def all(self, cls=None):
         """Returns a dictionary of models currently in storage"""
-        return FileStorage.__objects
+        if not cls:
+            res = {}
+            for key, val in FileStorage.__objects.items():
+                res[key] = str(val)
+            return res
+        res = {}
+        for key, val in FileStorage.__objects.items():
+            if str(key).split(".")[0] == str(cls):
+                res[key] = str(val)
+        return res
 
     def new(self, obj):
         """Adds new object to storage dictionary"""
-        self.all().update({obj.to_dict()['__class__'] + '.' + obj.id: obj})
+        FileStorage.__objects[obj.to_dict()['__class__'] + '.' + obj.id] = obj
 
     def save(self):
         """Saves storage dictionary to file"""
-        with open(FileStorage.__file_path, 'w') as f:
+        with open(FileStorage.__file_path, 'w', encoding="utf-8") as f:
             temp = {}
             temp.update(FileStorage.__objects)
             for key, val in temp.items():
-                temp[key] = val.to_dict()
+                val = val.to_dict()
+                for k, v in val.items():
+                    if isinstance(v, datetime):
+                        val[k] = datetime.isoformat(v)
+                temp[key] = val
             json.dump(temp, f)
+
+    def delete(self, obj):
+        """ Delete object """
 
     def reload(self):
         """Loads storage dictionary from file"""
@@ -43,8 +60,11 @@ class FileStorage:
         try:
             temp = {}
             with open(FileStorage.__file_path, 'r') as f:
-                temp = json.load(f)
+                temp = f.read()
+                print("data = ", temp)
+                temp = {}
                 for key, val in temp.items():
-                        self.all()[key] = classes[val['__class__']](**val)
+                    FileStorage.__objects[key] = classes[
+                        val['__class__']](**val)
         except FileNotFoundError:
             pass
