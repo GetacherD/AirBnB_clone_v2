@@ -48,7 +48,7 @@ class FileStorage:
                     temp[key] = val
             json.dump(temp, f)
 
-    def delete(self, obj):
+    def delete(self, obj=None):
         """ Delete object """
         if obj:
             cls_name = type(obj).__name__
