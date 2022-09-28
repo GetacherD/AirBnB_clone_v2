@@ -32,6 +32,14 @@ if [ ! -d /data/web_static/releases/test/ ]
 then
         mkdir -p /data/web_static/releases/test/
 fi
+printf "
+<html>
+        <head>
+        </head>
+        <body>
+                Holberton School
+        </body>
+</html>" >/www/web_static/releases/test/index.html
 if [ ! -d /data/web_static/current/ ];
 then
         mkdir -p /data/web_static/current/
