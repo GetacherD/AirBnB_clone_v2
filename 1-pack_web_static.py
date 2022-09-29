@@ -13,10 +13,10 @@ def do_pack():
     if not path.isdir("versions"):
         if local("mkdir -p versions").failed is True:
             return None
-    p = "versions/web_static_{}{}{}{}{}{}".format(
+    p = "versions/web_static_{}{}{}{}{}{}.tgz".format(
         archived.year, archived.month, archived.day,
         archived.hour, archived.minute, archived.second)
-    if local("tar -cvzf versions/{}.tgz web_static".format(
+    if local("tar -cvzf versions/{} web_static".format(
             p)).failed is True:
         return None
     return p
