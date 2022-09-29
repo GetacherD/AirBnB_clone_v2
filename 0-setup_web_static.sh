@@ -44,7 +44,7 @@ if [ ! -d /data/web_static/current/ ];
 then
         mkdir -p /data/web_static/current/
 fi
-ln -sf /data/web_static/releases/test/ /data/web_static/current/
+ln -sf /data/web_static/releases/test/ /data/web_static/current
 chown -R ubuntu /data/
 chgrp -R ubuntu /data/
 # create nginx configuration
