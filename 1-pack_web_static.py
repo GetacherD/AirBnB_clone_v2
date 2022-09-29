@@ -9,8 +9,8 @@ from fabric.api import local
 
 def do_pack():
     """ generate .tgz file"""
-    archived = dt.now()
-    if not path.isdir("versions"):
+    archived = dt.utcnow()
+    if path.isdir("versions") is False:
         if local("mkdir -p versions").failed is True:
             return None
     p = "versions/web_static_{}{}{}{}{}{}.tgz".format(
