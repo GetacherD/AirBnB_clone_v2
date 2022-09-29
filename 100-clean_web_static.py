@@ -19,7 +19,7 @@ def do_pack():
     if path.isdir("versions") is False:
         if local("mkdir -p versions").failed is True:
             return None
-    p = "versions/web_static_{}{}{}{}{}{}.tgz".format(
+    p = "versions/web_static_{}{:02d}{:02d}{:02d}{:02d}{:02d}.tgz".format(
         archived.year, archived.month, archived.day,
         archived.hour, archived.minute, archived.second)
     if local("tar -cvzf {} web_static/".format(
@@ -84,13 +84,8 @@ def do_clean(number=0):
         return;
     if int(number) >= len(paths):
         return;
-    paths = paths[n:]
-    pa = ["" + str(int(x.strftime("%Y"))) +
-            str(int(x.strftime("%m"))) +
-            str(int(x.strftime("%d"))) +
-            str(int(x.strftime("%H"))) +
-            str(int(x.strftime("%M"))) +
-            str(int(x.strftime("%S"))) for x in paths]
+    _path = paths[n:]
+    pa = [x.strftime("%Y%m%d%H%M%S") for x in _path]
     for p in pa:
         local("rm -rf versions/web_static_{}.tgz".format(p))
         run("rm -rf /data/web_static/releases/web_static_{}".format(p))
