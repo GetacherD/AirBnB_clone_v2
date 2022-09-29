@@ -57,6 +57,10 @@ file { '/var/www/html/index.html':
   content => 'Hello World!'
 }
 
+file { '/data/web_static/releases/test/index.html':
+  ensure  => 'present',
+  content => 'Holberton School'
+}
 file { '/var/www/errors/custom_404.html':
   ensure  => 'present',
   content => "Ceci n\'est pas une page"
