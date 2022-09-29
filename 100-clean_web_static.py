@@ -78,11 +78,19 @@ def do_clean(number=0):
     n = int(number)
     paths = sorted([dt.strptime(
         os.path.abspath(x).split("_")[-1].split(
-            ".")[0], "%Y%m%d%H%M%S") for x in os.listdir('./versions')])
+            ".")[0], "%Y%m%d%H%M%S") for x in os.listdir('./versions')], reverse=True)
+    #if int(number) > 1 and int(number) < len(paths):
     if int(number) <= 1:
-        n = 1
-    paths = paths[:(-1) * n]
-    paths = [x.strftime("%Y%m%d%H%M%S") for x in paths]
-    for p in paths:
+        return;
+    if int(number) >= len(paths):
+        return;
+    paths = paths[n:]
+    pa = ["" + str(int(x.strftime("%Y"))) +
+            str(int(x.strftime("%m"))) +
+            str(int(x.strftime("%d"))) +
+            str(int(x.strftime("%H"))) +
+            str(int(x.strftime("%M"))) +
+            str(int(x.strftime("%S"))) for x in paths]
+    for p in pa:
         local("rm -rf versions/web_static_{}.tgz".format(p))
         run("rm -rf /data/web_static/releases/web_static_{}".format(p))
