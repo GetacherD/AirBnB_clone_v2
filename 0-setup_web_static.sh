@@ -66,7 +66,7 @@ printf "server {
                 internal;
         }
         location / {
-                add_header X-Served-By 14407-web-01;
+                add_header X-Served-By $HOSTNAME;
         }
 
 }"> /etc/nginx/sites-available/default
