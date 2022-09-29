@@ -66,8 +66,8 @@ printf "server {
                 internal;
         }
         location / {
-                add_header X-Served-By $HOSTNAME;
+                add_header X-Served-By %s;
         }
 
-}"> /etc/nginx/sites-available/default
+}" "$HOSTNAME"> /etc/nginx/sites-available/default
 service nginx restart
