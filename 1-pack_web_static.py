@@ -16,7 +16,7 @@ def do_pack():
     p = "versions/web_static_{}{}{}{}{}{}.tgz".format(
         archived.year, archived.month, archived.day,
         archived.hour, archived.minute, archived.second)
-    if local("tar -cvzf versions/{} web_static".format(
+    if local("tar -cvzf {} web_static".format(
             p)).failed is True:
         return None
     return p
