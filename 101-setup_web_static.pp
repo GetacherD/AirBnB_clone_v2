@@ -3,6 +3,7 @@
 package { 'nginx':
   ensure => 'installed',
 }
+$host=$hostname
 $conf = "server {
 	listen   80 default_server;
 	listen   [::]:80 default_server;
@@ -20,32 +21,43 @@ $conf = "server {
 		root /var/www/errors/;
 		internal;
 	}
+	location / {
+                add_header X-Served-By ${host};
+        }
 		
 }
 "
-file {'/data/web_static/releases/':
-  enusre => 'directory',
-  owner  => 'ubuntu',
-  group  => 'ubuntu'
-}
-
-file {'/data/web_static/shared/':
-  enusre => 'directory',
-  owner  => 'ubuntu',
-  group  => 'ubuntu'
-}
-
-file {'/data/web_static/releases/test/':
-  enusre => 'directory',
-  owner  => 'ubuntu',
+file {'/data/':
+  ensure => 'directory',
   group  => 'ubuntu',
-  target => '/data/web_static/releases/test/'
+  owner  => 'ubuntu'
+}
+file {'/data/web_static/':
+  ensure => 'directory',
+  group  => 'ubuntu',
+  owner  => 'ubuntu'
+}
+file {'/data/web_static/releases/':
+  ensure => 'directory',
+  owner  => 'ubuntu',
+  group  => 'ubuntu'
+}
+file {'/data/web_static/releases/test/':
+  ensure => 'directory',
+  owner  => 'ubuntu',
+  group  => 'ubuntu'
+}
+file {'/data/web_static/shared/':
+  ensure => 'directory',
+  owner  => 'ubuntu',
+  group  => 'ubuntu'
 }
 
 file {'/data/web_static/current':
-  enusre => 'link',
+  ensure => 'link',
   owner  => 'ubuntu',
-  group  => 'ubuntu'
+  group  => 'ubuntu',
+  target => '/data/web_static/releases/test/'
 }
 file {'/etc/nginx/sites-available/default':
   ensure  => 'present',
@@ -63,7 +75,7 @@ file { '/data/web_static/releases/test/index.html':
 }
 file { '/var/www/errors/custom_404.html':
   ensure  => 'present',
-  content => "Ceci n\'est pas une page"
+  content => 'Ceci n\'est pas une page'
 }
 
 service {'nginx':
