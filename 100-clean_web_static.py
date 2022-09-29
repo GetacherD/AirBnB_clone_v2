@@ -85,4 +85,4 @@ def do_clean(number=0):
     paths = [x.strftime("%Y%m%d%H%M%S") for x in paths]
     for p in paths:
         local("rm -rf versions/web_static_{}.tgz".format(p))
-        run("rm-rf /data/web_static/releases/web_static_{}".format(p))
+        run("rm -rf /data/web_static/releases/web_static_{}".format(p))
