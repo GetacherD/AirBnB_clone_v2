@@ -71,7 +71,9 @@ file { '/var/www/html/index.html':
 
 file { '/data/web_static/releases/test/index.html':
   ensure  => 'present',
-  content => 'Holberton School'
+  content => 'Holberton School',
+  owner   => 'ubuntu',
+  group   => 'ubuntu'
 }
 file { '/var/www/errors/custom_404.html':
   ensure  => 'present',
