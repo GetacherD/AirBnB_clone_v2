@@ -3,8 +3,10 @@
 Generate .tgz files
 """
 import os
+import glob
+import time
 from datetime import datetime as dt
-from fabric.api import *
+from fabric.api import run, env, put, local
 
 
 env.user = "ubuntu"
@@ -73,18 +75,24 @@ def deploy():
 
 def do_clean(number=0):
     """clean outdated versions"""
-    n = int(number)
-    paths = sorted([dt.strptime(
-        os.path.abspath(x).split("_")[-1].split(
-            ".")[0], "%Y%m%d%H%M%S") for x in os.listdir('./versions')])
-    if int(number) <= 1:
-        return
-    if int(number) >= len(paths):
-        return
+    n = 1 if int(number) <= 0 else int(number)
+    dir_name = "versions/"
+    local_archive = filter(os.path.isfile, glob.glob(dir_name+"*"))
+    local_archive = sorted(local_archive, key=os.path.getmtime)
+    for i in range(2 * n):
+        try:
+            local_archive.pop()
+        except IndexError:
+            pass
+    for item in local_archive:
+        local("rm -f {}".format(item))
+    remote_archive = run("ls -1t /data/web_static/releases/")
+    remote_archive = [str(n)[:-1] if str(n)[-1] == '\r' else str(n)
+                      for n in remote_archive.split("\n")]
     for i in range(n):
-        paths.pop()
-    pa = [x.strftime("%Y%m%d%H%M%S") for x in paths]
-    for p in pa:
-        local("rm -rf versions/web_static_{}.tgz".format(p))
-    for p in pa:
-        run("rm -rf /data/web_static/releases/web_static_{}".format(p))
+        try:
+            remote_archive.pop()
+        except IndexError:
+            pass
+    for item in remote_archive:
+        run("rm -rf /data/web_static/releases/{}/".format(item))
