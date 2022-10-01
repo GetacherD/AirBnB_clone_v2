@@ -2,11 +2,9 @@
 """
 Generate .tgz files
 """
-import sys
 import os
-from os import path
 from datetime import datetime as dt
-from fabric.api import local, put, run, env
+from fabric.api import *
 
 
 env.user = "ubuntu"
@@ -16,7 +14,7 @@ env.hosts = ["3.236.145.87", "3.236.223.114"]
 def do_pack():
     """ generate .tgz file"""
     archived = dt.utcnow()
-    if path.isdir("versions") is False:
+    if os.path.isdir("versions") is False:
         if local("mkdir -p versions").failed is True:
             return None
     p = "versions/web_static_{}{:02d}{:02d}{:02d}{:02d}{:02d}.tgz".format(
@@ -31,7 +29,7 @@ def do_pack():
 def do_deploy(archive_path):
     """ Deploy files to servers"""
     print("archive_path")
-    if path.isfile("{}".format(archive_path)) is False:
+    if os.path.isfile("{}".format(archive_path)) is False:
         return False
     result = put("{}".format(
         archive_path), "/tmp/{}".format(
@@ -78,14 +76,15 @@ def do_clean(number=0):
     n = int(number)
     paths = sorted([dt.strptime(
         os.path.abspath(x).split("_")[-1].split(
-            ".")[0], "%Y%m%d%H%M%S") for x in os.listdir('./versions')], reverse=True)
-    #if int(number) > 1 and int(number) < len(paths):
+            ".")[0], "%Y%m%d%H%M%S") for x in os.listdir('./versions')])
     if int(number) <= 1:
-        return;
+        return
     if int(number) >= len(paths):
-        return;
-    _path = paths[n:]
-    pa = [x.strftime("%Y%m%d%H%M%S") for x in _path]
+        return
+    for i in range(n):
+        paths.pop()
+    pa = [x.strftime("%Y%m%d%H%M%S") for x in paths]
     for p in pa:
         local("rm -rf versions/web_static_{}.tgz".format(p))
+    for p in pa:
         run("rm -rf /data/web_static/releases/web_static_{}".format(p))
