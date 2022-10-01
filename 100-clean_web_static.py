@@ -66,7 +66,7 @@ def do_deploy(archive_path):
 
 
 def deploy():
-    """ Deploy in one command """
+    """ Deploy in one command   """
     file_path = do_pack()
     if not file_path:
         return False
