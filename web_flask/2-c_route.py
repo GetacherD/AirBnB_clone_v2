@@ -18,7 +18,7 @@ def hbnb_home():
     return "HBNB"
 
 
-@app.route("/c/<text>")
+@app.route("/c/<text>", strict_slashes=False)
 def get_variable(text):
     """ accept variable in url """
     value = text.replace("_", " ")
