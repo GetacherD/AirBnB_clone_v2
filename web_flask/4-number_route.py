@@ -33,13 +33,9 @@ def default_variable(text):
     return "Python {}".format(value)
 
 
-@app.route("/number/<n>", strict_slashes=False)
+@app.route("/number/<int:n>", strict_slashes=False)
 def get_number(n):
     """ get number from url"""
-    try:
-        n = int(str(n))
-    except TypeError:
-        return
     return "{} is a number".format(n)
 
 
