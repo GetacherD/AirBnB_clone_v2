@@ -69,5 +69,4 @@ class DBStorage:
 
     def close(self):
         """ remove session """
-        if self.__session .is_active:
-            self.__session.remove()
+        self.__session.close()
