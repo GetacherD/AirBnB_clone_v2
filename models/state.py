@@ -20,4 +20,5 @@ class State(BaseModel, Base):
         def cities(self):
             from . import storage
             from models.state import State
-            return storage.all(State)
+            cities_all = [state for state in storage.all(State).values()]
+            return cities_all
