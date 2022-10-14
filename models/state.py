@@ -18,4 +18,6 @@ class State(BaseModel, Base):
     if getenv("HBNB_TYPE_STORAGE") != "db":
         @property
         def cities(self):
-            return []
+            from . import storage
+            from models.state import State
+            return storage.all(State)
