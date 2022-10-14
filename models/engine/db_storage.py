@@ -43,7 +43,7 @@ class DBStorage:
                 cls = eval(cls)
             result = self.__session.query(cls).all()
         result = {
-                f"{type(obj).__name__}.{obj.id}":
+            f"{type(obj).__name__}.{obj.id}":
                 obj.to_dict() for obj in result}
         return result
 
@@ -69,4 +69,4 @@ class DBStorage:
 
     def close(self):
         """ remove session """
-        self.__session.close()
+        self.__session.remove()
