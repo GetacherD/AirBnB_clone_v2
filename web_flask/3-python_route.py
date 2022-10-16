@@ -26,6 +26,7 @@ def get_text(text):
         return "C {}".format(value)
 
 
+@app.route("/python/", strict_slashes=False)
 @app.route("/python/<text>", strict_slashes=False)
 def get_python(text):
     """ python smart route"""
