@@ -22,10 +22,8 @@ def hbnb_home():
 def get_text(text):
     """ get url params"""
     if text:
-        value = text.replace("_", " ")
-    else:
-        value = "cool"
-    return "C is {}".format(value)
+        value = str(text).replace("_", " ")
+        return "C {}".format(value)
 
 
 if __name__ == "__main__":
