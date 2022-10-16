@@ -18,13 +18,14 @@ def hbnb_home():
     return "HBNB"
 
 
-@app.route("/c/<text>", strict_slashes=False)
+@app.route("/c/<string:text>", strict_slashes=False)
 def get_text(text):
     """ get url params"""
-    value = text.replace("_", " ")
-    if value:
-        return "C is {}".format(value)
-    return "C is cool"
+    if text:
+        value = text.replace("_", " ")
+    else:
+        value = "cool"
+    return "C is {}".format(value)
 
 
 if __name__ == "__main__":
