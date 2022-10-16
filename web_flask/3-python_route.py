@@ -33,7 +33,7 @@ def get_python(text):
     value = "is cool"
     if text:
         value = text.replace("_", " ")
-    return "python {}".format(value)
+    return "Python {}".format(value)
 
 
 if __name__ == "__main__":
