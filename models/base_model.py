@@ -13,7 +13,7 @@ if getenv("HBNB_TYPE_STORAGE") == "db":
     Base = declarative_base()
 
 
-class BaseModel(Base):
+class BaseModel:
 
     """ Base Model Representation """
     def __init__(self, *args, **kwargs):
