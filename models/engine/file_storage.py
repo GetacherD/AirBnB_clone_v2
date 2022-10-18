@@ -21,11 +21,9 @@ class FileStorage:
         if not cls:
             return FileStorage.__objects
         res = {}
-        for key, value in FileStorage.__objects.items():
-            if type(cls) == str:
-                cls = eval(cls)
-            if str(key).split(".")[0] == cls.__name__:
-                res[key] = value
+        for key, obj in FileStorage.__objects.items():
+            if cls in [obj.__class__,  cls.__class__.__name__]:
+                res[key] = obj
         return res
 
     def new(self, obj):

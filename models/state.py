@@ -20,10 +20,10 @@ class State(BaseModel, Base):
 
         @property
         def cities(self):
-            all_cities = models.storage.all(City)
             res = []
+            all_cities = models.storage.all(City)
             for key, value in all_cities.items():
-                if value.to_dict().get("state_id", None) == self.id:
+                if value.state_id == self.id:
                     res.append(value)
                     
             return res
