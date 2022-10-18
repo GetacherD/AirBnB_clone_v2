@@ -21,11 +21,11 @@ class FileStorage:
             "Place", "BaseModel", "State", "City", "Amenity", "Review", "User"]
         output = {}
         if cls and cls.__name__ in all_class:
-            for key, obj in FileStorage.__objects.items():
+            for key, obj in self.__objects.items():
                 if key.split(".")[0] == cls.__name__:
                     output[key] = obj
             return output
-        return FileStorage.__objects
+        return self.__objects
 
     def new(self, obj):
         """Adds new object to storage dictionary"""
@@ -44,8 +44,11 @@ class FileStorage:
         """ delete object from file"""
         if obj and obj.__class__ in [
                 Place, BaseModel, User, State, City, Amenity, Review]:
-            del FileStorage.__objects["{}.{}".format(
-                obj.__class__.__name__, obj.id)]
+            try:
+                del self.__objects["{}.{}".format(
+                    obj.__class__.__name__, obj.id)]
+            except Exception:
+                pass
 
     def reload(self):
         """Loads storage dictionary from file"""
