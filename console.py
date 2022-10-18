@@ -126,27 +126,23 @@ class HBNBCommand(cmd.Cmd):
         try:
             cmd_args = args.split(" ")[1:]
             if " " in cmd_args:
-                print("Do nothing returning")
                 return
             for arg in cmd_args:
                 try:
                     key = arg.split("=")[0]
                     value = arg.split("=")[1]
-                    if value[0] != '"' or value[-1] != '"':
-                        try:
-                            n = float(value)
-                        except Exception:
-                            return
+                    if value[0] == '"' and value[-1] == '"':
+                        mydic[key] = value[1:-1]
+                    if "." in value and '"' not in value:
+                        mydic[key] = float(str(value))
+                    elif '"' not in value:
+                        mydic[key] = int(str(value))
+                    elif (value[0] == '"' and value[-1] != '"') or (
+                            value[0] != '"' and value[-1] == '"'):
+                        return
                 except Exception:
                     return
-                if "." in value:
-                    mydic[key] = float(value)
-                elif "\"" not in value:
-                    mydic[key] = int(value)
-                else:
-                    mydic[key] = str(value).replace("_", " ")[1:-1]
         except Exception:
-            print("exception but passed")
             return
         new_instance = HBNBCommand.classes[class_name](**mydic)
         print(new_instance.id)
