@@ -3,14 +3,13 @@
 import cmd
 import sys
 from models.base_model import BaseModel
-from models import storage
+from models.__init__ import storage
 from models.user import User
 from models.place import Place
 from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
-from utils import clean
 
 
 class HBNBCommand(cmd.Cmd):
@@ -53,6 +52,7 @@ class HBNBCommand(cmd.Cmd):
 
             # isolate <class name>
             _cls = pline[:pline.find('.')]
+
             # isolate and validate <command>
             _cmd = pline[pline.find('.') + 1:pline.find('(')]
             if _cmd not in HBNBCommand.dot_cmds:
@@ -118,43 +118,40 @@ class HBNBCommand(cmd.Cmd):
         if not args:
             print("** class name missing **")
             return
-        cls_name = args.split(" ")[0]
-        if cls_name not in HBNBCommand.classes:
+        class_name = args.split(" ")[0]
+        if class_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        kwargs = {}
-        if (len(args.split(" ")) >= 2):
-            for attr in clean(args.split(" ", maxsplit=1)[1]):
-                if "=" not in attr:
-                    continue
-                k = attr.split("=")[0]
-                v = attr.split("=")[1]
-                if (v[0] in ["'", '"']):
-                    v = v[1:]
-                    for i in v:
-                        if i == "_":
-                            v = v.replace("_", " ")
-                if v[-1] in ["'", '"']:
-                    v = v[:-1]
-                if "." in v:
-                    try:
-                        float(v)
-                    except ValueError:
-                        pass
-                    else:
-                        v = float(v)
+        mydic = {}
+        try:
+            cmd_args = args.split(" ")[1:]
+            if " " in cmd_args:
+                print("Do nothing returning")
+                return
+            for arg in cmd_args:
+                try:
+                    key = arg.split("=")[0]
+                    value = arg.split("=")[1]
+                    if value[0] != '"' or value[-1] != '"':
+                        try:
+                            n = float(value)
+                        except Exception:
+                            return
+                except Exception:
+                    return
+                if "." in value:
+                    mydic[key] = float(value)
+                elif "\"" not in value:
+                    mydic[key] = int(value)
                 else:
-                    try:
-                        int(v)
-                    except ValueError:
-                        pass
-                    else:
-                        v = int(v)
-                kwargs[k] = v
-        new_instance = HBNBCommand.classes[cls_name](**kwargs)
-        storage.new(new_instance)
+                    mydic[key] = str(value).replace("_", " ")
+        except Exception:
+            print("exception but passed")
+            return
+        new_instance = HBNBCommand.classes[class_name](**mydic)
         storage.save()
         print(new_instance.id)
+        storage.save()
 
     def help_create(self):
         """ Help information for the create method """
@@ -185,7 +182,7 @@ class HBNBCommand(cmd.Cmd):
 
         key = c_name + "." + c_id
         try:
-            print(storage.all(cls=c_name))
+            print(storage._FileStorage__objects[key])
         except KeyError:
             print("** no instance found **")
 
@@ -229,17 +226,21 @@ class HBNBCommand(cmd.Cmd):
 
     def do_all(self, args):
         """ Shows all objects, or all objects of a class"""
+        print_list = []
 
         if args:
             args = args.split(' ')[0]  # remove possible trailing args
             if args not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
-            print([f"{str(key)}:{str(val)}" for key, val in storage.all(
-                cls=args).items()])
+            for k, v in storage._FileStorage__objects.items():
+                if k.split('.')[0] == args:
+                    print_list.append(str(v))
         else:
-            print([f"{str(key)}:{str(val)}"
-                   for key, val in storage.all().items()])
+            for k, v in storage._FileStorage__objects.items():
+                print_list.append(str(v))
+
+        print(print_list)
 
     def help_all(self):
         """ Help information for the all command """
