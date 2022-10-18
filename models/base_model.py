@@ -2,19 +2,17 @@
 """This module defines a base class for all models in our hbnb clone"""
 import uuid
 from datetime import datetime
-import models
 
 
 class BaseModel:
     """A base class for all hbnb models"""
     def __init__(self, *args, **kwargs):
         """Instatntiates a new model"""
+        from models import storage
         if not kwargs:
-            from models import storage
             self.id = str(uuid.uuid4())
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
-            models.storage.new(self)
         else:
             if kwargs.get("updated_at"):
                 kwargs['updated_at'] = datetime.strptime(
@@ -31,6 +29,7 @@ class BaseModel:
             if not kwargs.get("id"):
                 kwargs["id"] = str(uuid.uuid4())
             self.__dict__.update(kwargs)
+        storage.new(self)
 
     def __str__(self):
         """Returns a string representation of the instance"""
@@ -41,7 +40,7 @@ class BaseModel:
         """Updates updated_at with current time when instance is changed"""
         from models import storage
         self.updated_at = datetime.now()
-        models.storage.save()
+        storage.save()
 
     def to_dict(self):
         """Convert instance into dict format"""
