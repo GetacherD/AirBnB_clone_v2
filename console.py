@@ -144,7 +144,7 @@ class HBNBCommand(cmd.Cmd):
                 elif "\"" not in value:
                     mydic[key] = int(value)
                 else:
-                    mydic[key] = str(value).replace("_", " ")
+                    mydic[key] = str(value).replace("_", " ")[1:-1]
         except Exception:
             print("exception but passed")
             return
