@@ -149,8 +149,6 @@ class HBNBCommand(cmd.Cmd):
             print("exception but passed")
             return
         new_instance = HBNBCommand.classes[class_name](**mydic)
-        if mydic != {}:
-            storage.new(new_instance)
         print(new_instance.id)
         storage.save()
 
