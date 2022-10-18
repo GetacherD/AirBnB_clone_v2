@@ -31,7 +31,6 @@ class BaseModel:
             if not kwargs.get("id"):
                 kwargs["id"] = str(uuid.uuid4())
             self.__dict__.update(kwargs)
-            models.storage.new(self)
 
     def __str__(self):
         """Returns a string representation of the instance"""
