@@ -139,11 +139,11 @@ class HBNBCommand(cmd.Cmd):
                         mydic[key] = int(str(value))
                     elif (value[0] == '"' and value[-1] != '"') or (
                             value[0] != '"' and value[-1] == '"'):
-                        return
+                        coninue
                 except Exception:
-                    return
+                    continue
         except Exception:
-            return
+            continue
         new_instance = HBNBCommand.classes[class_name](**mydic)
         print(new_instance.id)
         storage.save()
