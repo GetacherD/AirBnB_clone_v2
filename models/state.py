@@ -17,7 +17,7 @@ class State(BaseModel, Base):
             "City", backref="state", cascade="all, delete")
     else:
         name = ""
-
+    if getenv("HBNB_TYPE_STORAGE", None) != "db":
         @property
         def cities(self):
             res = []
