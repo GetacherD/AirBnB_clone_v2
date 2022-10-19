@@ -4,13 +4,24 @@ from os import getenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import scoped_session
-from models.base_model import Base
+from models.base_model import Base, BaseModel
 from models.state import State
 from models.city import City
 from models.user import User
 from models.place import Place
 from models.review import Review
 from models.amenity import Amenity
+
+CLS = {
+    "BaseModel": BaseModel,
+    "User": User,
+    "Place": Place,
+    "Amenity": Amenity,
+    "City": City,
+    "State": State,
+    "Review": Review
+}
+CLASS = [BaseModel, User, Place, Amenity, City, State, Review]
 
 
 class DBStorage:
@@ -39,12 +50,16 @@ class DBStorage:
             result.extend(self.__session.query(Review).all())
             result.extend(self.__session.query(Amenity).all())
         else:
-            if type(cls) == str:
-                cls = eval(cls)
-            result = self.__session.query(cls).all()
-        result = {
-                f"{obj.__class__.__name__}.{obj.id}":
-                obj for obj in result}
+            if cls in CLASS:
+                result = self.__session.query(cls).all()
+            else:
+                result = {}
+        if result:
+            result = {
+                "{}.{}".format(
+                    obj.__class__.__name__, obj.id): obj for obj in result}
+        else:
+            result = {}
         return result
 
     def new(self, obj):
