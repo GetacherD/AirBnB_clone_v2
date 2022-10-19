@@ -32,41 +32,41 @@ class DBStorage:
     def all(self, cls=None):
         """ print all data """
         if not cls:
-            result = self.__session().query(State).all()
-            result.extend(self.__session().query(City).all())
-            result.extend(self.__session().query(User).all())
-            result.extend(self.__session().query(Place).all())
-            result.extend(self.__session().query(Review).all())
-            result.extend(self.__session().query(Amenity).all())
+            result = self.__session.query(State).all()
+            result.extend(self.__session.query(City).all())
+            result.extend(self.__session.query(User).all())
+            result.extend(self.__session.query(Place).all())
+            result.extend(self.__session.query(Review).all())
+            result.extend(self.__session.query(Amenity).all())
         else:
             if type(cls) == str:
                 cls = eval(cls)
-            result = self.__session().query(cls).all()
+            result = self.__session.query(cls).all()
         result = {
-                f"{type(obj).__name__}.{obj.id}":
-                obj.to_dict() for obj in result}
+                f"{obj.__class__.__name__}.{obj.id}":
+                obj for obj in result}
         return result
 
     def new(self, obj):
         """ add new object to session"""
-        self.__session().add(obj)
+        self.__session.add(obj)
 
     def save(self):
         """ save session to database """
-        self.__session().commit()
+        self.__session.commit()
 
     def delete(self, obj=None):
         """ Delete object """
         if obj:
-            self.__session().delete(obj)
+            self.__session.delete(obj)
 
     def reload(self):
         """ reload from db """
         Base.metadata.create_all(self.__engine)
         session_ = sessionmaker(
             bind=self.__engine, expire_on_commit=False)
-        self.__session = scoped_session(session_)
+        self.__session = scoped_session(session_)()
 
     def close(self):
         """ close session """
-        self.__session.remove()
+        self.__session.close()
