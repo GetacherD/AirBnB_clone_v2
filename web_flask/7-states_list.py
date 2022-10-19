@@ -26,8 +26,7 @@ def index():
 @app.route("/states_list", strict_slashes=False)
 def get_state():
     """ get all states_list """
-    state = sorted([obj for obj in storage.all(State).values()],
-                   key=lambda item: item.name)
+    state = storage.all(State)
     return render_template("7-states_list.html", state=state)
 
 
