@@ -13,7 +13,6 @@ from models.review import Review
 from models.amenity import Amenity
 
 CLS = {
-    "BaseModel": BaseModel,
     "User": User,
     "Place": Place,
     "Amenity": Amenity,
@@ -52,6 +51,8 @@ class DBStorage:
         else:
             if cls in CLASS:
                 result = self.__session.query(cls).all()
+            elif cls in CLS.keys():
+                result = self.__session.query(CLS.get(cls)).all()
             else:
                 result = {}
         if result:
@@ -80,8 +81,8 @@ class DBStorage:
         Base.metadata.create_all(self.__engine)
         sess_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(sess_factory)
-        self.__session = Session
+        self.__session = Session()
 
     def close(self):
         """ close session """
-        self.__session.remove()
+        self.__session.close()

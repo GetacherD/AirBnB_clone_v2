@@ -228,7 +228,7 @@ class HBNBCommand(cmd.Cmd):
             if args not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
-            for k, v in models.storage.all(eval(args)).items():
+            for k, v in models.storage.all(args).items():
                 if eval(k.split('.')[0]) == args or k.split(".")[0] == args:
                     print_list.append(str(v))
         else:
