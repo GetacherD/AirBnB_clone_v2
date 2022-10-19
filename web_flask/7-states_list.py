@@ -4,7 +4,7 @@ Flask App
 """
 from flask import Flask
 from flask import render_template
-import models
+from models import storage
 from models.state import State
 
 
@@ -14,7 +14,7 @@ app = Flask(__name__)
 @app.teardown_appcontext
 def teardown(self):
     """ close connection"""
-    models.storage.close()
+    storage.close()
 
 
 @app.route("/", strict_slashes=False)
@@ -26,7 +26,8 @@ def index():
 @app.route("/states_list", strict_slashes=False)
 def get_state():
     """ get all states_list """
-    state = [obj for obj in models.storage.all(State).values()]
+    state = sorted([obj for obj in storage.all(State).values()],
+                   key=lambda item: item.name)
     return render_template("7-states_list.html", state=state)
 
 
