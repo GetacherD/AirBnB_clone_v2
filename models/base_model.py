@@ -4,7 +4,6 @@ import uuid
 import models
 from datetime import datetime
 from os import getenv
-from uuid import uuid4
 from sqlalchemy import Column, String, DateTime
 
 
@@ -31,24 +30,30 @@ class BaseModel:
         if kwargs and kwargs.get("__class__", None):
             del kwargs["__class__"]
         if kwargs:
+            for key, value in kwargs.items():
+                setattr(self, key, value)
             if kwargs.get("updated_at", None) and isinstance(
                     kwargs.get("updated_at", None), str):
-                kwargs['updated_at'] = datetime.fromisoformat(
+                self.updated_at = datetime.fromisoformat(
                     kwargs['updated_at'])
             else:
-                kwargs["updated_at"] = datetime.utcnow()
+                self.updated_at = datetime.utcnow()
             if kwargs.get("created_at", None) and isinstance(
                     kwargs.get("created_at", None), str):
-                kwargs['created_at'] = datetime.fromisoformat(
+                self.created_at = datetime.fromisoformat(
                     kwargs['created_at'])
             else:
-                kwargs["created_at"] = datetime.utcnow()
-            self.__dict__.update(kwargs)
+                self.created_at = datetime.utcnow()
 
     def __str__(self):
         """Returns a string representation of the instance"""
         cls = self.__class__.__name__
-        return "[{}] ({}) {}".format(cls, self.id, self.__dict__)
+        res = self.__dict__.copy()
+        if "_sa_instance_state" in res.keys():
+            del res["_sa_instance_state"]
+        if "__class__" in res.keys():
+            del res["__class__"]
+        return "[{}] ({}) {}".format(cls, self.id, res)
 
     def save(self):
         """Updates updated_at with current time when instance is changed"""
