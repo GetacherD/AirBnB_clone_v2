@@ -3,7 +3,6 @@
 from os import getenv
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
-from models.city import City
 from models.base_model import BaseModel, Base
 import models
 
@@ -17,11 +16,11 @@ class State(BaseModel, Base):
             "City", backref="state", cascade="all, delete")
     else:
         name = ""
-    if getenv("HBNB_TYPE_STORAGE", None) != "db":
+
         @property
         def cities(self):
             res = []
-            all_cities = models.storage.all(City)
+            all_cities = models.storage.all("City")
             for value in all_cities.values():
                 if value.state_id == self.id:
                     res.append(value)
