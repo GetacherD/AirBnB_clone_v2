@@ -3,7 +3,7 @@
 import cmd
 import sys
 from models.base_model import BaseModel
-from models.__init__ import storage
+import models
 from models.user import User
 from models.place import Place
 from models.state import State
@@ -180,7 +180,7 @@ class HBNBCommand(cmd.Cmd):
 
         key = c_name + "." + c_id
         try:
-            print(storage.all()[key])
+            print(models.storage.all()[key])
         except KeyError:
             print("** no instance found **")
 
@@ -212,8 +212,8 @@ class HBNBCommand(cmd.Cmd):
         key = c_name + "." + c_id
 
         try:
-            del(storage.all()[key])
-            storage.save()
+            del(models.storage.all()[key])
+            models.storage.save()
         except KeyError:
             print("** no instance found **")
 
@@ -231,11 +231,11 @@ class HBNBCommand(cmd.Cmd):
             if args not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
-            for k, v in storage.all().items():
-                if k.split('.')[0] == args:
+            for k, v in models.storage.all(HBNBCommand.classes[args]).items():
+                if eval(k.split('.')[0]) == args or k.split(".")[0] == args:
                     print_list.append(str(v))
         else:
-            for k, v in storage.all().items():
+            for v in models.storage.all().values():
                 print_list.append(str(v))
         ls = "[" + ", ".join(print_list) + "]"
         print(ls)
@@ -248,7 +248,7 @@ class HBNBCommand(cmd.Cmd):
     def do_count(self, args):
         """Count current number of class instances"""
         count = 0
-        for k, v in storage.all().items():
+        for k, v in models.storage.all().items():
             if args == k.split('.')[0]:
                 count += 1
         print(count)
