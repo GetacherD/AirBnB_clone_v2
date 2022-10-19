@@ -49,13 +49,15 @@ class FileStorage:
     def delete(self, obj=None):
         """ Delete object """
         if obj:
-            cls_name = type(obj).__name__
-            if cls_name:
-                _id = obj.to_dict().get("id")
-                key = f"{cls_name}.{_id}"
-                if key in FileStorage.__objects:
-                    del FileStorage.__objects[key]
-                    self.save()
+            cls_name = obj.__class__.__name__
+            if cls_name in ["BaseModel", "User", "Place", "State",
+                            "Review", "City", "Amenity"]:
+                _id = obj.to_dict().get("id", None)
+                if _id:
+                    key = f"{cls_name}.{_id}"
+                    if key in FileStorage.__objects:
+                        del FileStorage.__objects[key]
+                        self.save()
 
     def reload(self):
         """Loads storage dictionary from file"""
