@@ -9,7 +9,7 @@ from sqlalchemy import Column, String, DateTime
 
 
 if getenv("HBNB_TYPE_STORAGE") == "db":
-    from sqlalchemy.orm import declarative_base
+    from sqlalchemy.ext.declarative import declarative_base
     Base = declarative_base()
 else:
     Base = object
@@ -18,8 +18,8 @@ else:
 class BaseModel:
     """A base class for all hbnb models"""
     if getenv("HBNB_TYPE_STORAGE") == "db":
-        id = Column(String(60), default=uuid4,
-                    primary_key=True, unique=True, nullable=False)
+        id = Column(String(60),
+                    primary_key=True, nullable=False)
         created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
         updated_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
@@ -48,10 +48,7 @@ class BaseModel:
     def __str__(self):
         """Returns a string representation of the instance"""
         cls = self.__class__.__name__
-        rec = self.__dict__.copy()
-        if '_sa_instance_state' in rec.keys():
-            del rec['_sa_instance_state']
-        return "[{}] ({}) {}".format(cls, self.id, rec)
+        return "[{}] ({}) {}".format(cls, self.id, self.__dict__)
 
     def save(self):
         """Updates updated_at with current time when instance is changed"""
