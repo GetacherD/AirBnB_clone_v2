@@ -144,12 +144,15 @@ class HBNBCommand(cmd.Cmd):
                     continue
         except Exception:
             pass
-        if mydic == {}:
-            new_instance = HBNBCommand.classes[class_name]()
-        else:
-            new_instance = HBNBCommand.classes[class_name](**mydic)
-        new_instance.save()
-        print(new_instance.id)
+        try:
+            if mydic == {}:
+                new_instance = HBNBCommand.classes[class_name]()
+            else:
+                new_instance = HBNBCommand.classes[class_name](**mydic)
+            new_instance.save()
+            print(new_instance.id)
+        except Exception:
+            pass
 
     def help_create(self):
         """ Help information for the create method """
