@@ -13,7 +13,7 @@ app = Flask(__name__)
 @app.route("/states_list", strict_slashes=False)
 def get_state():
     """ get all states_list """
-    state = sorted(list(storage.all('State')), key=lambda x: x.name)
+    state = sorted(list(storage.all('State').values()), key=lambda x: x.name)
     return render_template("7-states_list.html", state=state)
 
 
