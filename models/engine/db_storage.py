@@ -3,7 +3,6 @@
 Contains the class DBStorage
 """
 
-import models
 from models.amenity import Amenity
 from models.base_model import BaseModel, Base
 from models.city import City
@@ -12,7 +11,6 @@ from models.review import Review
 from models.state import State
 from models.user import User
 from os import getenv
-import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
@@ -43,17 +41,32 @@ class DBStorage:
     def all(self, cls=None):
         """query on the current database session"""
         new_dict = {}
-        for clss in classes:
-            if cls is None or cls is classes[clss] or cls is clss:
-                objs = self.__session().query(classes[clss]).all()
-                for obj in objs:
-                    key = obj.__class__.__name__ + '.' + obj.id
+        if cls in ["", "BaseModel", BaseModel, None]:
+            res = list(self.__session().query(State).all())
+            res.extend(self.__session().query(User).all())
+            res.extend(self.__session().query(Place).all())
+            res.extend(self.__session().query(City).all())
+            res.extend(self.__session().query(Review).all())
+            res.extend(self.__session().query(Amenity).all())
+            for obj in res:
+                key = "{}.{}".format(obj.__class__.__name__, obj.id)
+                new_dict[key] = obj
+        else:
+            try:
+                if isinstance(cls, str):
+                    cls = eval(cls)
+                res = list(self.__session().query(cls))
+                for obj in res:
+                    key = "{}.{}".format(obj.__class__.__name__, obj.id)
                     new_dict[key] = obj
-        return (new_dict)
+            except Exception:
+                new_dict = {}
+        return new_dict
 
     def new(self, obj):
         """add the object to the current database session"""
-        self.__session().add(obj)
+        if obj:
+            self.__session().add(obj)
 
     def save(self):
         """commit all changes of the current database session"""
@@ -61,7 +74,7 @@ class DBStorage:
 
     def delete(self, obj=None):
         """delete from the current database session obj if not None"""
-        if obj is not None:
+        if obj:
             self.__session().delete(obj)
 
     def reload(self):
