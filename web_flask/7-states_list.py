@@ -18,7 +18,7 @@ def get_state():
 
 
 @app.teardown_appcontext
-def teardown(exc=None):
+def teardown_conn(exc=None):
     """ close connection"""
     storage.close()
 
