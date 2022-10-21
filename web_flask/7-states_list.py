@@ -10,17 +10,17 @@ from models import storage
 app = Flask(__name__)
 
 
+@app.teardown_appcontext
+def teardown_conn(self):
+    """ close connection """
+    storage.close()
+
+
 @app.route("/states_list", strict_slashes=False)
 def get_state():
     """ get all states_list """
-    state = sorted(list(storage.all('State').values()), key=lambda x: x.name)
+    state = storage.all('State').values()
     return render_template("7-states_list.html", state=state)
-
-
-@app.teardown_appcontext
-def teardown_conn(exc=None):
-    """ close connection"""
-    storage.close()
 
 
 if __name__ == "__main__":
