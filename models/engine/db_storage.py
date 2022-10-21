@@ -41,7 +41,7 @@ class DBStorage:
     def all(self, cls=None):
         """query on the current database session"""
         new_dict = {}
-        if cls in ["", "BaseModel", BaseModel, None]:
+        if not(cls in classes or cls in classes.values()):
             res = list(self.__session().query(State).all())
             res.extend(self.__session().query(User).all())
             res.extend(self.__session().query(Place).all())

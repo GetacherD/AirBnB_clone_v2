@@ -14,6 +14,7 @@ app = Flask(__name__)
 def get_state():
     """ get all states_list """
     state = sorted(list(storage.all('State').values()), key=lambda x: x.name)
+    print(state)
     return render_template("7-states_list.html", state=state)
 
 

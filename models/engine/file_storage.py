@@ -10,6 +10,15 @@ from models.city import City
 from models.amenity import Amenity
 from models.review import Review
 
+CLASSES = {
+    "User": User,
+    "Place": Place,
+    "City": City,
+    "Review": Review,
+    "Amenity": Amenity,
+    "State": State
+}
+
 
 class FileStorage:
     """This class manages storage of hbnb models in JSON format"""
@@ -18,7 +27,7 @@ class FileStorage:
 
     def all(self, cls=None):
         """Returns a dictionary of models currently in storage"""
-        if cls in ["", "BaseModel", BaseModel, None]:
+        if cls not in CLASSES or cls not in CLASSES.values():
             return FileStorage.__objects
         res = {}
         if isinstance(cls, str):
